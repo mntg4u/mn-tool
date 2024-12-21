@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upscaler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Photo Upscaler</h1>
+        <p>Upload a photo to upscale it.</p>
+        <input type="file" id="upload" accept="image/*">
+        <button onclick="upscaleImage()">Upscale Photo</button>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <div id="output">
+            <img id="result" alt="Upscaled Photo">
+        </div>
+    </div>
+
+    <script>
+        function upscaleImage() {
+            const fileInput = document.getElementById('upload');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please upload an image.');
+                return;
+            }
+
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                img.src = e.target.result;
+                img.onload = function () {
+                    const scaleFactor = 10; // Upscaling by 10x
+
+                    canvas.width = img.width * scaleFactor;
+                    canvas.height = img.height * scaleFactor;
+
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    const resultImg = document.getElementById('result');
+                    resultImg.src = canvas.toDataURL();
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
