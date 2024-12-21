@@ -99,13 +99,6 @@
             background: rgba(244, 67, 54, 0.6);
         }
 
-        /* Custom button colors */
-        .button-qr { background-color: #9b59b6; }
-        .button-tts { background-color: #2ecc71; }
-        .button-translator { background-color: #f1c40f; }
-        .button-currency { background-color: #3498db; }
-        .button-dark-mode { background-color: #e74c3c; }
-
         /* To-Do List Styles */
         #todo-list ul {
             list-style-type: none;
@@ -184,63 +177,7 @@
             <option value="es">Spanish</option>
             <option value="fr">French</option>
             <option value="de">German</option>
-            <option value="zh-CN">Chinese (Simplified)</option>
-            <option value="zh-TW">Chinese (Traditional)</option>
-            <option value="hi">Hindi</option>
-            <option value="ar">Arabic</option>
-            <option value="ja">Japanese</option>
-            <option value="ko">Korean</option>
-            <option value="ru">Russian</option>
-            <option value="pt">Portuguese</option>
-            <option value="it">Italian</option>
-            <option value="tr">Turkish</option>
-            <option value="nl">Dutch</option>
-            <option value="sv">Swedish</option>
-            <option value="pl">Polish</option>
-            <option value="da">Danish</option>
-            <option value="fi">Finnish</option>
-            <option value="he">Hebrew</option>
-            <option value="el">Greek</option>
-            <option value="id">Indonesian</option>
-            <option value="ms">Malay</option>
-            <option value="th">Thai</option>
-            <option value="vi">Vietnamese</option>
-            <option value="uk">Ukrainian</option>
-            <option value="bg">Bulgarian</option>
-            <option value="cs">Czech</option>
-            <option value="no">Norwegian</option>
-            <option value="ro">Romanian</option>
-            <option value="fa">Persian</option>
-            <option value="tl">Tagalog</option>
-            <option value="bn">Bengali</option>
-            <option value="ur">Urdu</option>
-            <option value="ta">Tamil</option>
-            <option value="te">Telugu</option>
-            <option value="ml">Malayalam</option>
-            <option value="kn">Kannada</option>
-            <option value="mr">Marathi</option>
-            <option value="gu">Gujarati</option>
-            <option value="pa">Punjabi</option>
-            <option value="sw">Swahili</option>
-            <option value="am">Amharic</option>
-            <option value="yo">Yoruba</option>
-            <option value="ha">Hausa</option>
-            <option value="ig">Igbo</option>
-            <option value="km">Khmer</option>
-            <option value="lo">Lao</option>
-            <option value="si">Sinhala</option>
-            <option value="my">Burmese</option>
-            <option value="is">Icelandic</option>
-            <option value="ga">Irish</option>
-            <option value="ca">Catalan</option>
-            <option value="eo">Esperanto</option>
-            <option value="hu">Hungarian</option>
-            <option value="sl">Slovenian</option>
-            <option value="sk">Slovak</option>
-            <option value="lv">Latvian</option>
-            <option value="lt">Lithuanian</option>
-            <option value="et">Estonian</option>
-            <option value="mt">Maltese</option>
+            <!-- Add other languages here -->
         </select>
         <button class="button-translator" onclick="translateText()">Translate Text</button>
         <div id="translation-result"></div>
@@ -286,6 +223,27 @@
         <input type="text" id="todo-input" placeholder="Add a new task" />
         <button class="button-dark-mode" onclick="addTask()">Add Task</button>
         <ul id="task-list"></ul>
+    </div>
+
+    <!-- File Upload & Conversion -->
+    <div class="widget file-converter">
+        <h3>File Converter (Text to PDF)</h3>
+        <input type="file" id="file-upload" />
+        <button class="button-dark-mode" onclick="convertFile()">Convert to PDF</button>
+        <div id="conversion-result"></div>
+    </div>
+
+    <!-- Clock and Date Display -->
+    <div class="widget clock">
+        <h3>Current Date & Time</h3>
+        <p id="current-time"></p>
+    </div>
+
+    <!-- Search Feature -->
+    <div class="widget search-feature">
+        <h3>Search the Dashboard</h3>
+        <input type="text" id="search-input" placeholder="Search..." oninput="searchContent()">
+        <div id="search-results"></div>
     </div>
 </div>
 
@@ -337,7 +295,49 @@
         document.body.classList.toggle("dark-mode");
     }
 
-    // Image Generation, Text-to-Speech, Language Translation, QR Code generation will be similar to before
+    // File Converter (Text to PDF)
+    function convertFile() {
+        const fileInput = document.getElementById("file-upload").files[0];
+        if (!fileInput) {
+            alert("Please upload a file.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function() {
+            const fileContent = reader.result;
+            const pdf = new jsPDF();
+            pdf.text(fileContent, 10, 10);
+            pdf.save('converted-file.pdf');
+        };
+        reader.readAsText(fileInput);
+    }
+
+    // Clock and Date
+    function updateClock() {
+        const currentDate = new Date();
+        const timeString = currentDate.toLocaleTimeString();
+        const dateString = currentDate.toLocaleDateString();
+        document.getElementById("current-time").innerText = `${dateString} - ${timeString}`;
+    }
+
+    setInterval(updateClock, 1000);
+
+    // Search Content
+    function searchContent() {
+        const searchTerm = document.getElementById("search-input").value.toLowerCase();
+        const searchResults = document.getElementById("search-results");
+        const widgets = document.querySelectorAll('.widget');
+        let results = '';
+        
+        widgets.forEach((widget, index) => {
+            if (widget.innerText.toLowerCase().includes(searchTerm)) {
+                results += `<div>Widget ${index + 1} matches the search term</div>`;
+            }
+        });
+
+        searchResults.innerHTML = results;
+    }
 </script>
 
 </body>
