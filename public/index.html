@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Runner for Multiple Languages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Run Code in Multiple Languages</h1>
+    <p>Select a language and enter your code:</p>
+
+    <label for="language">Select Language:</label>
+    <select id="language">
+        <option value="js">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="php">PHP</option>
+        <option value="go">Go</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="java">Java</option>
+    </select><br><br>
+
+    <textarea id="codeInput" placeholder="Type your code here..."></textarea><br>
+    <button onclick="runCode()">Run</button>
+
+    <h2>Output:</h2>
+    <div id="output"></div>
+
+    <script>
+        function runCode() {
+            const code = document.getElementById("codeInput").value;
+            const language = document.getElementById("language").value;
+            const outputElement = document.getElementById("output");
+            outputElement.textContent = ""; // Clear previous output
+
+            fetch('/run_code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code, language })
+            })
+            .then(response => response.json())
+            .then(data => {
+                outputElement.textContent = data.output;
+            })
+            .catch(error => {
+                outputElement.textContent = 'Error: ' + error.message;
+            });
+        }
+    </script>
+
+</body>
+</html>
